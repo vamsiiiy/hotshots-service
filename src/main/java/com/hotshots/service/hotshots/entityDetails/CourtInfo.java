@@ -17,10 +17,15 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="CourtInfo")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "courtId")
 public class CourtInfo implements java.io.Serializable{
 
 	@Id
@@ -31,12 +36,11 @@ public class CourtInfo implements java.io.Serializable{
 	@Column(name = "courtName")
 	private String courtName;
 	
-	@Column(name = "bookingId")
-	private int bookingId;
+//	@Column(name = "bookingId")
+//	private int bookingId;
 	
 	@ManyToOne
-	@JoinColumn(name="bookingId", insertable =  false, updatable = false)
-	 @JsonBackReference
+	@JoinColumn(name="bookingId", insertable =  true, updatable = false)
 	private BookingInfo bookingInfo;
 	
 	public BookingInfo getBookingInfo() {
@@ -49,17 +53,16 @@ public class CourtInfo implements java.io.Serializable{
 
 	@OneToMany(fetch = FetchType.EAGER,mappedBy="courtInfo")
 	@Cascade({CascadeType.ALL})
-	@JsonManagedReference
 	private Set<TimeSlotInfo> timeSlotDetails;
 
 
 	
 
 
-	public CourtInfo(int courtId, String courtName, int bookingId, BookingInfo bookingInfo, Set<TimeSlotInfo> timeSlotDetails) {
+	public CourtInfo(int courtId, String courtName, BookingInfo bookingInfo, Set<TimeSlotInfo> timeSlotDetails) {
 		this.courtId = courtId;
 		this.courtName = courtName;
-		this.bookingId = bookingId;
+//		this.bookingId = bookingId;
 		this.bookingInfo = bookingInfo;
 		this.timeSlotDetails = timeSlotDetails;
 	}
@@ -92,13 +95,13 @@ public class CourtInfo implements java.io.Serializable{
 		this.courtName = courtName;
 	}
 
-	public int getBookingId() {
-		return bookingId;
-	}
-
-	public void setBookingId(int bookingId) {
-		this.bookingId = bookingId;
-	}
+//	public int getBookingId() {
+//		return bookingId;
+//	}
+//
+//	public void setBookingId(int bookingId) {
+//		this.bookingId = bookingId;
+//	}
 
 
 	

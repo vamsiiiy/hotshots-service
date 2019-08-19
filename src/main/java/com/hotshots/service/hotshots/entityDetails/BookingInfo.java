@@ -17,15 +17,19 @@ import org.hibernate.annotations.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="BookingInfo")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "bookingId")
 public class BookingInfo implements java.io.Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "bookingId")
-	private int bookingId;
+	private Integer bookingId;
 	
 	@Column(name = "bookingDate")
 	private String bookingDate;
@@ -42,14 +46,13 @@ public class BookingInfo implements java.io.Serializable{
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy="bookingInfo")
 	@Cascade({CascadeType.ALL})
-	@JsonManagedReference
 	private Set<CourtInfo> courtDetailsList;
 
-	public int getBookingId() {
+	public Integer getBookingId() {
 		return bookingId;
 	}
 
-	public void setBookingId(int bookingId) {
+	public void setBookingId(Integer bookingId) {
 		this.bookingId = bookingId;
 	}
 
@@ -68,6 +71,5 @@ public class BookingInfo implements java.io.Serializable{
 	public void setCourtDetailsList(Set<CourtInfo> courtDetailsList) {
 		this.courtDetailsList = courtDetailsList;
 	}
-
 	
 }

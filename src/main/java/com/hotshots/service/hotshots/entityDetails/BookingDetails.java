@@ -15,9 +15,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="BookingDetails")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "bookingDetailsId")
 public class BookingDetails implements java.io.Serializable{
 
 	@Id
@@ -32,7 +37,7 @@ public class BookingDetails implements java.io.Serializable{
 		this.bookingDetailsId = bookingDetailsId;
 		this.bookingName = bookingName;
 		this.mobilenumber = mobilenumber;
-		this.timeSlotId = timeSlotId;
+//		this.timeSlotId = timeSlotId;
 		this.TimeSlotInfo = TimeSlotInfo;
 	}
 
@@ -50,12 +55,12 @@ public class BookingDetails implements java.io.Serializable{
 	@Column(name = "mobilenumber")
 	private String mobilenumber;
 	
-	@Column(name = "timeSlotId")
-	private int timeSlotId;
+//	@Column(name = "timeSlotId")
+//	private int timeSlotId;
 	
 	@OneToOne
-    @JoinColumn(name = "timeSlotId", insertable =  false, updatable = false)
-	@JsonBackReference
+    @JoinColumn(name = "timeSlotId", insertable =  true, updatable = false)
+	
     private TimeSlotInfo TimeSlotInfo;
 	
 
@@ -87,11 +92,11 @@ public class BookingDetails implements java.io.Serializable{
 		this.mobilenumber = mobilenumber;
 	}
 
-	public int getTimeSlotId() {
-		return timeSlotId;
-	}
-
-	public void setTimeSlotId(int timeSlotId) {
-		this.timeSlotId = timeSlotId;
-	}
+//	public int getTimeSlotId() {
+//		return timeSlotId;
+//	}
+//
+//	public void setTimeSlotId(int timeSlotId) {
+//		this.timeSlotId = timeSlotId;
+//	}
 }

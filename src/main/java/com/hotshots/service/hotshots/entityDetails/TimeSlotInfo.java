@@ -15,10 +15,15 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="TimeSlotInfo")
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "timeSlotId")
 public class TimeSlotInfo implements java.io.Serializable{
 	
 
@@ -71,13 +76,13 @@ public class TimeSlotInfo implements java.io.Serializable{
 		this.isSlotBooked = isSlotBooked;
 	}
 
-	public int getCourtId() {
-		return courtId;
-	}
-
-	public void setCourtId(int courtId) {
-		this.courtId = courtId;
-	}
+//	public int getCourtId() {
+//		return courtId;
+//	}
+//
+//	public void setCourtId(int courtId) {
+//		this.courtId = courtId;
+//	}
 
 	@Column(name = "timeSlotCode")
 	private String timeSlotCode;
@@ -88,13 +93,12 @@ public class TimeSlotInfo implements java.io.Serializable{
 	@Column(name = "isSlotBooked")
 	private boolean isSlotBooked;
 	
-	@Column(name = "courtId")
-	private int courtId;
+//	@Column(name = "courtId")
+//	private int courtId;
 	
 	
 	@ManyToOne
-	@JoinColumn(name="courtId", insertable =  false, updatable = false)
-	@JsonBackReference
+	@JoinColumn(name="courtId", insertable =  true, updatable = false)
 	private CourtInfo courtInfo;
 
 
@@ -105,7 +109,7 @@ public class TimeSlotInfo implements java.io.Serializable{
 		this.timeSlotCode = timeSlotCode;
 		this.timeSlotDescription = timeSlotDescription;
 		this.isSlotBooked = isSlotBooked;
-		this.courtId = courtId;
+//		this.courtId = courtId;
 		this.courtInfo = courtInfo;
 //		this.bookingDetails = bookingDetails;
 	}
@@ -122,10 +126,33 @@ public class TimeSlotInfo implements java.io.Serializable{
 	@OneToOne(mappedBy = "TimeSlotInfo",
             fetch = FetchType.EAGER)
 	@Cascade({CascadeType.ALL})
-	@JsonManagedReference
     private BookingDetails bookingDetails;
 	
-    
+	public UtilityInfo getUtilityInfoDetails() {
+		return utilityInfoDetails;
+	}
+
+	public void setUtilityInfoDetails(UtilityInfo utilityInfoDetails) {
+		this.utilityInfoDetails = utilityInfoDetails;
+	}
+
+	@OneToOne(mappedBy = "TimeSlotInfo",
+            fetch = FetchType.EAGER)
+	@Cascade({CascadeType.ALL})
+    private UtilityInfo utilityInfoDetails;
+	
+	@OneToOne(mappedBy = "TimeSlotInfo",
+            fetch = FetchType.EAGER)
+	@Cascade({CascadeType.ALL})
+    private PaymentDetails paymentDetails;
+
+	public PaymentDetails getPaymentDetails() {
+		return paymentDetails;
+	}
+
+	public void setPaymentDetails(PaymentDetails paymentDetails) {
+		this.paymentDetails = paymentDetails;
+	}
     
 
 }
