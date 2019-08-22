@@ -1,5 +1,7 @@
 package com.hotshots.service.hotshots.entityDetails;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -128,19 +131,20 @@ public class TimeSlotInfo implements java.io.Serializable{
 	@Cascade({CascadeType.ALL})
     private BookingDetails bookingDetails;
 	
-	public UtilityInfo getUtilityInfoDetails() {
+
+
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="TimeSlotInfo")
+	@Cascade({CascadeType.ALL})
+    private Set<UtilityInfo> utilityInfoDetails;
+	
+	public Set<UtilityInfo> getUtilityInfoDetails() {
 		return utilityInfoDetails;
 	}
 
-	public void setUtilityInfoDetails(UtilityInfo utilityInfoDetails) {
+	public void setUtilityInfoDetails(Set<UtilityInfo> utilityInfoDetails) {
 		this.utilityInfoDetails = utilityInfoDetails;
 	}
 
-	@OneToOne(mappedBy = "TimeSlotInfo",
-            fetch = FetchType.EAGER)
-	@Cascade({CascadeType.ALL})
-    private UtilityInfo utilityInfoDetails;
-	
 	@OneToOne(mappedBy = "TimeSlotInfo",
             fetch = FetchType.EAGER)
 	@Cascade({CascadeType.ALL})

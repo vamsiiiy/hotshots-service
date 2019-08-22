@@ -30,6 +30,10 @@ public class UtilityInfo implements java.io.Serializable{
 	@Column(name = "utilityPrice")
 	private float UtilityPrice;
 	
+	@Column(name = "utilityQuantity")
+	private int UtilityQuantity;
+	
+	
 	@OneToOne
     @JoinColumn(name = "timeSlotId", insertable =  true, updatable = false)
     private TimeSlotInfo TimeSlotInfo;
@@ -40,6 +44,14 @@ public class UtilityInfo implements java.io.Serializable{
 
 	public int getUtilityId() {
 		return UtilityId;
+	}
+
+	public int getUtilityQuantity() {
+		return UtilityQuantity;
+	}
+
+	public void setUtilityQuantity(int utilityQuantity) {
+		UtilityQuantity = utilityQuantity;
 	}
 
 	public void setUtilityId(int utilityId) {

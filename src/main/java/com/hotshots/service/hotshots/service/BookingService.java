@@ -1,22 +1,29 @@
 package com.hotshots.service.hotshots.service;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotshots.service.hotshots.dao.BookingRepository;
 import com.hotshots.service.hotshots.dao.TimeSlotRepository;
+import com.hotshots.service.hotshots.dao.UtilityRepository;
 import com.hotshots.service.hotshots.entityDetails.BookingInfo;
 import com.hotshots.service.hotshots.entityDetails.CourtInfo;
+import com.hotshots.service.hotshots.entityDetails.PaymentDetails;
 import com.hotshots.service.hotshots.entityDetails.TimeSlotInfo;
+import com.hotshots.service.hotshots.entityDetails.UtilityInfo;
 
 @Service
 public class BookingService {
 
 	private BookingRepository bookingRepository;
 	private TimeSlotRepository timeSlotRepository;
+	private UtilityRepository utilityRepository;
 
 	public TimeSlotRepository getTimeSlotRepository() {
 		return timeSlotRepository;
@@ -27,9 +34,10 @@ public class BookingService {
 	}
 
 	@Autowired
-	public BookingService(BookingRepository bookingRepository, TimeSlotRepository timeSlotRepository) {
+	public BookingService(BookingRepository bookingRepository, TimeSlotRepository timeSlotRepository, UtilityRepository utilityRepository) {
 		this.bookingRepository = bookingRepository;
 		this.timeSlotRepository = timeSlotRepository;
+		this.utilityRepository = utilityRepository;
 	}
 
 	public BookingRepository getBookingRepository() {
@@ -63,6 +71,10 @@ public class BookingService {
 				for(TimeSlotInfo timeSlot: courtInfo.getTimeSlotDetails()) {
 					timeSlot.setCourtInfo(courtInfo);
 					timeSlot.getBookingDetails().setTimeSlotInfo(timeSlot);
+					for(UtilityInfo utilityDetails: timeSlot.getUtilityInfoDetails()) {
+						utilityDetails.setTimeSlotInfo(timeSlot);
+					}
+					timeSlot.getPaymentDetails().setTimeSlotInfo(timeSlot);
 					courtInfo.getTimeSlotDetails().add(timeSlot);
 				}
 				
@@ -84,6 +96,51 @@ public class BookingService {
 				timeSlot.getBookingDetails().setBookingName(timeSlotInfoRequest.getBookingDetails().getBookingName());
 				timeSlot.getBookingDetails().setMobilenumber(timeSlotInfoRequest.getBookingDetails().getMobilenumber());
 				timeSlot.setSlotBooked(true);
+				
+				
+				// If there is no Utility information in DB and a new value is inserted
+				if(timeSlot.getUtilityInfoDetails() == null && timeSlotInfoRequest.getUtilityInfoDetails() != null) {
+					
+					Set<UtilityInfo> newutilityInfoDetailsCollection = new 	HashSet<UtilityInfo>();
+					for(UtilityInfo utilityDetailsRequest: timeSlotInfoRequest.getUtilityInfoDetails()) {
+						UtilityInfo newUtiltiy = new UtilityInfo();
+						newUtiltiy.setTimeSlotInfo(timeSlot);
+						newUtiltiy.setUtilityName(utilityDetailsRequest.getUtilityName());
+						newUtiltiy.setUtilityPrice(utilityDetailsRequest.getUtilityPrice());
+						newUtiltiy.setUtilityQuantity(utilityDetailsRequest.getUtilityQuantity());
+						newutilityInfoDetailsCollection.add(newUtiltiy);
+					}
+					
+					timeSlot.setUtilityInfoDetails(newutilityInfoDetailsCollection);
+				}
+				else if(timeSlot.getUtilityInfoDetails() != null && timeSlotInfoRequest.getUtilityInfoDetails() != null){
+//
+//					for(Iterator<UtilityInfo> featureIterator = timeSlot.getUtilityInfoDetails().iterator(); 
+//						    featureIterator.hasNext(); ) {
+//							UtilityInfo feature = featureIterator.next();
+//						    feature.setTimeSlotInfo(null);
+//						    featureIterator.remove();
+//						}
+					this.utilityRepository.deleteTimeSlotId(timeSlot.getTimeSlotId());
+//					this.utilityRepository.save(entity)
+//					timeSlot.getUtilityInfoDetails().clear();
+					for(UtilityInfo utilityDetailsRequest: timeSlotInfoRequest.getUtilityInfoDetails()) {
+						UtilityInfo newUtiltiy = new UtilityInfo();
+						newUtiltiy.setTimeSlotInfo(timeSlot);
+						newUtiltiy.setUtilityName(utilityDetailsRequest.getUtilityName());
+						newUtiltiy.setUtilityPrice(utilityDetailsRequest.getUtilityPrice());
+						newUtiltiy.setUtilityQuantity(utilityDetailsRequest.getUtilityQuantity());
+						timeSlot.getUtilityInfoDetails().add(newUtiltiy);
+					}										
+				}
+
+				if(timeSlot.getPaymentDetails() == null) {
+					timeSlot.setPaymentDetails(new PaymentDetails());
+					timeSlot.getPaymentDetails().setTimeSlotInfo(timeSlot);
+				}
+				
+				timeSlot.getPaymentDetails().setPaymentMode(timeSlotInfoRequest.getPaymentDetails().getPaymentMode());				
+				timeSlot.getPaymentDetails().setIsPaymentDone(timeSlotInfoRequest.getPaymentDetails().isIsPaymentDone());
 				areTimeSlotsBooked = true;
 			} 
 		}
@@ -92,6 +149,10 @@ public class BookingService {
 			timeSlotInfoRequest.setCourtInfo(courtItem);
 			timeSlotInfoRequest.getBookingDetails().setTimeSlotInfo(timeSlotInfoRequest);
 			courtItem.getTimeSlotDetails().add(timeSlotInfoRequest);
+			for(UtilityInfo utilty: timeSlotInfoRequest.getUtilityInfoDetails()) {
+				utilty.setTimeSlotInfo(timeSlotInfoRequest);
+			}
+			timeSlotInfoRequest.getPaymentDetails().setTimeSlotInfo(timeSlotInfoRequest);
 		}
 	}
 	
