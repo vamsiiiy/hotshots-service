@@ -66,7 +66,7 @@ public class BookingService {
 			
 				} 
 			}
-			if(!areCourtsNotAvailable) {
+			if(!areCourtsNotAvailable && courtInfo.getTimeSlotDetails() != null) {
 				courtInfo.setBookingInfo(bookingItem);
 				for(TimeSlotInfo timeSlot: courtInfo.getTimeSlotDetails()) {
 					timeSlot.setCourtInfo(courtInfo);
@@ -136,11 +136,13 @@ public class BookingService {
 
 				if(timeSlot.getPaymentDetails() == null) {
 					timeSlot.setPaymentDetails(new PaymentDetails());
-					timeSlot.getPaymentDetails().setTimeSlotInfo(timeSlot);
 				}
+				timeSlot.getPaymentDetails().setTimeSlotInfo(timeSlot);
 				
 				timeSlot.getPaymentDetails().setPaymentMode(timeSlotInfoRequest.getPaymentDetails().getPaymentMode());				
 				timeSlot.getPaymentDetails().setIsPaymentDone(timeSlotInfoRequest.getPaymentDetails().isIsPaymentDone());
+				timeSlot.getPaymentDetails().setReceivedBy(timeSlotInfoRequest.getPaymentDetails().getReceivedBy());
+				timeSlot.getPaymentDetails().setPaidTo(timeSlotInfoRequest.getPaymentDetails().getPaidTo());
 				areTimeSlotsBooked = true;
 			} 
 		}
@@ -157,17 +159,28 @@ public class BookingService {
 	}
 	
 	
-	public String updateBasedOnTimeSlotId(int timeSlotId) {
+	public List<BookingInfo> updateBasedOnTimeSlotId(String dateDetails, int timeSlotId) {
 		
 		Optional<TimeSlotInfo> timeSlotInfo = this.timeSlotRepository.findById(timeSlotId);
 		if(timeSlotInfo != null) {
 			timeSlotInfo.get().setSlotBooked(false);
 			timeSlotInfo.get().getBookingDetails().setBookingName("");
 			timeSlotInfo.get().getBookingDetails().setMobilenumber("");
+			timeSlotInfo.get().setSlotBooked(false);
+			for (UtilityInfo utility: timeSlotInfo.get().getUtilityInfoDetails()
+				 ) {
+				utility.setUtilityName("");
+				utility.setUtilityPrice(0);
+				utility.setUtilityQuantity(0);
+			}
+			timeSlotInfo.get().getPaymentDetails().setIsPaymentDone(false);
+			timeSlotInfo.get().getPaymentDetails().setPaidTo("");
+			timeSlotInfo.get().getPaymentDetails().setPaymentMode("");
+			timeSlotInfo.get().getPaymentDetails().setReceivedBy("");
 			this.timeSlotRepository.save(timeSlotInfo.get());
-			return "Cancelled";
+			return this.bookingRepository.findByBookingDate(dateDetails);
 		}
-		return "Couldn't find the time Slot";
+		return null;
 	}
 	
 }

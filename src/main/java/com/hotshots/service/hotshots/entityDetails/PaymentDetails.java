@@ -27,6 +27,28 @@ public class PaymentDetails implements java.io.Serializable {
 	@Column(name = "paymentMode")
 	private String PaymentMode;
 	
+	@Column(name = "receivedBy")
+	private String receivedBy;
+	
+	@Column(name = "paidTo")
+	private String paidTo;
+	
+	public String getReceivedBy() {
+		return receivedBy;
+	}
+
+	public void setReceivedBy(String receivedBy) {
+		this.receivedBy = receivedBy;
+	}
+
+	public String getPaidTo() {
+		return paidTo;
+	}
+
+	public void setPaidTo(String paidTo) {
+		this.paidTo = paidTo;
+	}
+
 	@Column(name = "isPaymentDone")
 	private boolean IsPaymentDone;
 	

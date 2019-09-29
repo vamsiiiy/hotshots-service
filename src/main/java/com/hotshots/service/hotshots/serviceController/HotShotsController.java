@@ -60,11 +60,13 @@ public class HotShotsController {
 		return this.bookingService.saveCourtDetails(courtInfo, bookingId);
 	   
 	}
-	
-	@GetMapping("/cancelTimeSlot/{timeSlotId}")   
-	public String cancelTimeSlot(@PathVariable int timeSlotId) throws Exception{
+
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/cancelTimeSlot")
+	public List<BookingInfo> cancelTimeSlot(@RequestParam("bookingDate") String bookingDate, @RequestParam("timeSlotId") int timeSlotId) throws Exception{
 		System.out.println(timeSlotId);
-		 return this.bookingService.updateBasedOnTimeSlotId(timeSlotId);   
+		System.out.println(bookingDate);
+		return this.bookingService.updateBasedOnTimeSlotId(bookingDate, timeSlotId);
 	}
 	
 }
