@@ -2,6 +2,7 @@ package com.hotshots.service.hotshots.serviceController;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,9 @@ import com.hotshots.service.hotshots.service.BookingService;
 public class HotShotsController {
 	
 	private BookingService  bookingService;
+	
+	@Autowired
+	private com.hotshots.service.hotshots.config.tasks.SampleTasklet SampleTasklet;
 	
 	public HotShotsController(BookingService bookingService) {
 		this.bookingService = bookingService;
@@ -68,5 +72,15 @@ public class HotShotsController {
 		System.out.println(bookingDate);
 		return this.bookingService.updateBasedOnTimeSlotId(bookingDate, timeSlotId);
 	}
+	
+	@GetMapping("/testing")
+	public String TestBatch() throws Exception{
+		
+		this.bookingService.TestBatchProcess();
+		
+		return "";
+	}
+	
+	
 	
 }

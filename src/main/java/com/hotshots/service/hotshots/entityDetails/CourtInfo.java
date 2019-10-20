@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
@@ -53,6 +54,7 @@ public class CourtInfo implements java.io.Serializable{
 
 	@OneToMany(fetch = FetchType.EAGER,mappedBy="courtInfo")
 	@Cascade({CascadeType.ALL})
+	@OrderBy("timeSlotCode ASC")
 	private Set<TimeSlotInfo> timeSlotDetails;
 
 

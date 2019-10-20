@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.hotshots.service.hotshots.dao.BookingRepository;
 import com.hotshots.service.hotshots.dao.TimeSlotRepository;
 import com.hotshots.service.hotshots.dao.UtilityRepository;
+import com.hotshots.service.hotshots.email.EmailService;
 import com.hotshots.service.hotshots.entityDetails.BookingInfo;
 import com.hotshots.service.hotshots.entityDetails.CourtInfo;
 import com.hotshots.service.hotshots.entityDetails.PaymentDetails;
@@ -24,6 +25,9 @@ public class BookingService {
 	private BookingRepository bookingRepository;
 	private TimeSlotRepository timeSlotRepository;
 	private UtilityRepository utilityRepository;
+	
+	@Autowired
+	public EmailService EmailService;
 
 	public TimeSlotRepository getTimeSlotRepository() {
 		return timeSlotRepository;
@@ -181,6 +185,12 @@ public class BookingService {
 			return this.bookingRepository.findByBookingDate(dateDetails);
 		}
 		return null;
+	}
+	
+	public String TestBatchProcess() {
+		this.EmailService.BuildContextData(this.bookingRepository.findByBookingDate("11-06-2018"));
+		this.EmailService.sendEmail();
+		return "";
 	}
 	
 }

@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
@@ -49,6 +50,7 @@ public class BookingInfo implements java.io.Serializable{
 
 	@OneToMany(fetch = FetchType.LAZY,mappedBy="bookingInfo")
 	@Cascade({CascadeType.ALL})
+	@OrderBy("courtName ASC")
 	private Set<CourtInfo> courtDetailsList;
 
 	public Integer getBookingId() {
